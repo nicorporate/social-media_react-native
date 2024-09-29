@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Button } from '../components/ButtonComponent';
 import { Input } from '../components/InputComponent';
 import { useSelector, useDispatch } from 'react-redux';
 import { createProfile } from '../../store/actions/profileAction';
-import { useState } from 'react';
+
 
 const RegisterScreen = (props) => {
     const { navigation } = props;
@@ -20,6 +20,11 @@ const RegisterScreen = (props) => {
       isEmailFormat,
       setIsEmailFormat
      ] = useState(true);
+
+    const [
+      isPassVisible,
+      setIsPassVisible
+    ] = useState(false);
 
     const onChangeInput = (inputType, value) => {
       const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -105,6 +110,10 @@ const RegisterScreen = (props) => {
               title="Password"
               placeholder="Password"
               onChangeText={(text) => onChangeInput('password', text)}
+              isPassword={true}
+              secureTextEntry={isPassVisible ? false : true}
+              iconName={isPassVisible ? 'eye-off' : 'eye'}
+              onPress={() => setIsPassVisible(!isPassVisible)}
             />
           </View>
           <Button
