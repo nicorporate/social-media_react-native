@@ -1,24 +1,81 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Button } from '../components/ButtonComponent';
 import { Input } from '../components/InputComponent';
 import { useSelector, useDispatch } from 'react-redux';
 import { createProfile } from '../../store/actions/profileAction';
+import { useState } from 'react';
 
 const RegisterScreen = (props) => {
     const { navigation } = props;
     const dispatch = useDispatch();
     const globalProfileData = useSelector(store => store.profileReducer);
+    const [form, setForm] = useState({
+      username: '',
+      email: '',
+      password: ''
+    })
+
+    const [
+      isEmailFormat,
+      setIsEmailFormat
+     ] = useState(true);
+
+    const onChangeInput = (inputType, value) => {
+      const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+        if (inputType === 'email') {
+          if (!emailRegex.test(value)) {
+            setIsEmailFormat(false);
+          } else { setIsEmailFormat(true);};
+        };
+      setForm({
+      ...form,
+       [inputType]: value
+       });
+    };
+
+    const sendData = () => {
+      if (form.username === '' || form.email === '' || form.password === '' || !isEmailFormat){
+        alert('Make sure you fill all the field with the right information!');
+      }
+      else {
+        dispatch(createProfile(form));
+        Alert.alert(
+          "Success",
+          "Successfully create an account!",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate('Login')
+            }
+          ]
+        );
+      }
+    };
+
     useEffect(() => {
+      console.log('GLOBAL STATE ON REGISTER PAGE');
       console.log(globalProfileData);
     }, [globalProfileData]);
+    // useEffect(() => {
+    //   dispatch(createProfile({
+    //     username: ' Mr. Niko',
+    //     email: 'mr.niko@gmail.com',
+    //     password: 'mrniko123'
+    //   }))
+    // }, []);
     useEffect(() => {
-      dispatch(createProfile({
-        username: ' Mr. Niko',
-        email: 'mr.niko@gmail.com',
-        password: 'mrniko123'
-      }))
-    }, []);
+      console.log('LOCAL STATE');
+      console.log('username: ' + form.username);
+      console.log('email: ' + form.email);
+      console.log('password: ' + form.password);
+    }, [form]);
+    
+    useEffect(() => {
+      if (form.email === '') {
+      setIsEmailFormat(true);
+      }
+     }, [form.email]);
 
     return (
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -26,20 +83,34 @@ const RegisterScreen = (props) => {
           <View style={styles.inputContainer}>
             <Input
               title="Username"
-            placeholder="Username"
+              placeholder="Username"
+              onChangeText={(text) => onChangeInput('username', text)}
             />
             <Input
               title="Email"
-            placeholder="Email"
+              placeholder="Email"
+              onChangeText={(text) => onChangeInput('email', text)}
             />
+            {
+              isEmailFormat ?
+                null
+                :
+                <View style={styles.warningContainer}>
+                  <Text style={styles.warning}>
+                    Please input the right email format!
+                  </Text>
+                </View>
+            }
             <Input
               title="Password"
-            placeholder="Password"
+              placeholder="Password"
+              onChangeText={(text) => onChangeInput('password', text)}
             />
           </View>
           <Button
             text="Register"
-            />
+            onPress={() => sendData()}
+          />
           <View style={styles.textContainer}>
             <Text style={styles.text}>
               Already have an account?
@@ -84,5 +155,13 @@ const RegisterScreen = (props) => {
     loginText: {
     color: '#1A5B0A',
     fontSize: 16
-  }
+  },
+  warningContainer: {
+    marginBottom: 16,
+    marginLeft: 16
+    },
+    warning: {
+    color: 'red'
+    }
+
   });
