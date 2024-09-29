@@ -4,3 +4,9 @@ export const createProfile = (value) => {
         payload: value
     }
 };
+export const loginUser = (value) => {
+    return {
+        type: 'LOGIN',
+        payload: value
+    }
+};
