@@ -20,7 +20,7 @@ const LoginScreen = (props) => {
       }
       else if ((username.toLowerCase() === globalProfileData.username.toLowerCase()) && (password.toLowerCase() === globalProfileData.password.toLowerCase())) {
         // alert(`Login Successful!`);
-        navigation.navigate('Home');
+        navigation.navigate('Home'); 
 
       }
       else {
