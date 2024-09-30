@@ -7,9 +7,16 @@ import {
 } from 'react-native';
 
 export const Button = (props) => {
-  const { text } = props;
+  const { text, isLogout } = props;
   return (
-    <View style={styles.buttonContainer}>
+    <View style={
+      [
+        styles.buttonContainer,
+        {
+          backgroundColor: isLogout ? '#F87B7B' : '#CAE3BB'
+        }
+      ]
+    }>
       <TouchableOpacity
         style={styles.button}
         {...props}
@@ -28,7 +35,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     margin: 16,
-    backgroundColor: '#CAE3BB'
+    // backgroundColor: '#CAE3BB'
   },
   button: {
     padding: 8
